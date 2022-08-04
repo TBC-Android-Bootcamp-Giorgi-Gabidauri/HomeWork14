@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Flow</string>
+    <string name="titleKa">იყიდება ბინა პროექტში დომუსი იპოდრომი 3</string>
+    <string name="publish_date" tools:ignore="TypographyDashes">2021-10-04 12:11:00</string>
+    <string name="description" tools:ignore="TypographyDashes">205 მ² ფართი მე-11-21 სართულზე.\nმისაღები ვესტიბიული კონსიერჟით;\nდახურული ვერანდები;\nბელგიური კომპანია Reynaers-ის ალუმინის კარ-ფანჯარა;\nფრანგული კომპანია Saint-Gobain-ის დაბალემისიური მინები;\nბელგიური კომპანია Renson-ის მოძრავი ჟალუზები;\nფინური კომპანია KONE-ს ლიფტი;\nდაცული ეზო;\nეკოლოგიური გარემო;\nველოსიპედის ბილიკი;\nშიდა ეზო - 11000 მ2;\nჩაბარების პირობა: მწვანე კარკასი +</string>
+    <string name="ka">Ka</string>
+    <string name="en">En</string>
+    <string name="ru">Ru</string>
+    <string name="image">image</string>
+</resources>
