@@ -34,18 +34,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         binding.sRL.isRefreshing = true
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getList().collect {
-                    when (it) {
-                        is Result.Success -> {
-                            adapter.submitList(it.list)
-                            binding.sRL.isRefreshing = false
-                        }
-                        is Result.Error -> {
-                            Toast.makeText(this@MainActivity, it.errorMSg, Toast.LENGTH_SHORT)
-                                .show()
-                            binding.sRL.isRefreshing = false
+                if(viewModel.state.value.list.isNotEmpty()){
+                    viewModel.state.collect{
+                        adapter.submitList(it.list)
+                        binding.sRL.isRefreshing = false
+                    }
+                }else{
+                    viewModel.getList().collect {
+                        when (it) {
+                            is Result.Success -> {
+                                adapter.submitList(it.list.content)
+                                binding.sRL.isRefreshing = false
+                            }
+                            is Result.Error -> {
+                                Toast.makeText(this@MainActivity, it.errorMSg, Toast.LENGTH_SHORT)
+                                    .show()
+                                binding.sRL.isRefreshing = false
+                            }
                         }
                     }
                 }
