@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gabo.flow.adapter.ItemsAdapter
 import com.gabo.flow.databinding.ActivityMainBinding
 import com.gabo.flow.model.Content
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -33,19 +33,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
+        binding.sRL.isRefreshing = true
         lifecycleScope.launch {
-            viewModel.viewState.collect {
-                binding.sRL.isRefreshing = viewModel.viewState.value.isLoading
-                viewModel.viewState.value.isLoading.also { isLoading ->
-                    binding.ctvEN.isVisible = !isLoading
-                    binding.ctvRU.isVisible = !isLoading
-                    binding.ctvKA.isVisible = !isLoading
-                }
-                if (it.isSuccessful == true) {
-                    adapter.submitList(viewModel.viewState.value.list!!.content)
-                } else {
-                    viewModel.viewState.value.errorMsg?.let {msg ->
-                        Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getList().collect {
+                    when (it) {
+                        is Result.Success -> {
+                            adapter.submitList(it.list)
+                            binding.sRL.isRefreshing = false
+                        }
+                        is Result.Error -> {
+                            Toast.makeText(this@MainActivity, it.errorMSg, Toast.LENGTH_SHORT)
+                                .show()
+                            binding.sRL.isRefreshing = false
+                        }
                     }
                 }
             }
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
             sRL.setOnRefreshListener {
                 adapter.submitList(emptyList())
                 viewModel.getList()
+                setupObservers()
             }
         }
     }
